@@ -12,7 +12,6 @@ namespace Code.Interactable {
 
     public class Trees : Building {
         [field: SerializeField] private int MinQuantity, MaxQuantity;
-        [field: SerializeField] private RectTransform QuantityBackground;
         [field: SerializeField] private RectMask2D RectMask;
         private int InitialQuantity;
         private LTDescr Tween;
@@ -70,9 +69,6 @@ namespace Code.Interactable {
 
         private void UpdateQuantityUI() {
             float ratio = this.Quantity / (float)this.InitialQuantity;
-            Vector2 size = this.QuantityBackground.sizeDelta;
-            size.x = -this.UIWidth * (1 - ratio);
-            this.QuantityBackground.sizeDelta = size;
             this.RectMask.padding = new Vector4(0, 0, this.UIWidth * (1 - ratio), 0);
         }
     }
