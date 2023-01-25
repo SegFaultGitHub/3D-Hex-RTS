@@ -280,6 +280,9 @@ MonoBehaviour:
     Tiles: []
     Complete: 0
     RenewAt: 0
+  <UICreationPrefab>k__BackingField: {fileID: 1707830637302018176, guid: 6fc5bfd2bbf95af4298e880a9ba3dde7,
+    type: 3}
+  <CreationDuration>k__BackingField: 3000
   FieldOfView: 4
 --- !u!114 &5070115842561370574
 MonoBehaviour:

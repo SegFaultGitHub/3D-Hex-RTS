@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Code.Interactable;
 using Code.Tiles;
+using Code.UI;
 using UnityEngine;
 
 namespace Code.Characters {
@@ -25,6 +26,8 @@ namespace Code.Characters {
         private LTDescr PopupTween;
         protected float TurnSmoothVelocity;
         [field: SerializeField] public Path Path { protected get; set; }
+        [field: SerializeField] public ProgressiveBarUI UICreationPrefab { get; private set; }
+        [field: SerializeField] public long CreationDuration { get; private set; }
 
         public float StepOffset => this.Controller.stepOffset;
 

@@ -1,11 +1,12 @@
 ﻿using Code.Interactable;
 using Code.Tiles;
+using Code.UI;
 using UnityEngine;
 
 namespace Code.Characters {
     public abstract class Player : Character {
-        [SerializeField] private int FieldOfView;
-
+        [field: SerializeField] private int FieldOfView;
+        
         protected override void Update() {
             Tile groundTile = this.GroundTile;
             base.Update();

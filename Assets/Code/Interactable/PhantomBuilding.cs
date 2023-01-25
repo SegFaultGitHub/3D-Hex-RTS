@@ -8,7 +8,7 @@ namespace Code.Interactable {
         public void Build() {
             Building building = Instantiate(this.OnCompletionBuilding);
             building.transform.position = this.transform.position;
-            Destroy(this);
+            Destroy(this.gameObject);
         }
     }
 }
