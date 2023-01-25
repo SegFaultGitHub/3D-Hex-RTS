@@ -7,8 +7,8 @@ using Code.UI;
 using UnityEngine;
 
 namespace Code.Characters {
-    public class Character : Selectable, IInteractable, IWithWorldCanvas {
-        protected const float TURN_SMOOTH_TIME = 0.1f;
+    public abstract class Character : Selectable, IWithWorldCanvas {
+        private const float TURN_SMOOTH_TIME = 0.1f;
         private static readonly Collider[] GROUND_COLLIDER = new Collider[1];
         private static readonly Vector3 GRAVITY = new(0, -0.02f, 0);
         private static readonly int MOVING = Animator.StringToHash("Moving");
@@ -24,7 +24,7 @@ namespace Code.Characters {
         private Transform GroundCollider;
         private Vector3 MovementDirection;
         private LTDescr PopupTween;
-        protected float TurnSmoothVelocity;
+        private float TurnSmoothVelocity;
         [field: SerializeField] public Path Path { protected get; set; }
         [field: SerializeField] public ProgressiveBarUI UICreationPrefab { get; private set; }
         [field: SerializeField] public long CreationDuration { get; private set; }
@@ -105,10 +105,6 @@ namespace Code.Characters {
             #endregion
         }
 
-        public void Interact(Selectable selected) {
-            throw new NotImplementedException();
-        }
-
         public void SetGroundTile(Tile tile) {
             if (this.GroundTile is not null)
                 this.GroundTile.Occupied = false;
@@ -175,5 +171,23 @@ namespace Code.Characters {
                 .setEaseOutBack()
                 .setOnComplete(() => this.PopupTween = null);
         }
+
+        protected void RotateTowardsTile(Tile tile) {
+            Vector3 diff = tile.GridPosition - this.GroundTile.GridPosition;
+            float targetAngle;
+            if (diff == new Vector3(1, -1, 0)) targetAngle = 30;
+            else if (diff == new Vector3(1, 0, -1)) targetAngle = 90;
+            else if (diff == new Vector3(0, 1, -1)) targetAngle = 150;
+            else if (diff == new Vector3(-1, 1, 0)) targetAngle = 210;
+            else if (diff == new Vector3(-1, 0, 1)) targetAngle = 270;
+            else if (diff == new Vector3(0, -1, 1)) targetAngle = 330;
+            else throw new Exception("[Lumberjack:RotateTowardsTrees] Invalid diff.");
+
+            float angle = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, targetAngle, ref this.TurnSmoothVelocity, TURN_SMOOTH_TIME);
+            this.transform.rotation = Quaternion.Euler(0, angle, 0);
+        }
+
+        public virtual void OnSelect() { }
+        public virtual void OnDeselect() { }
     }
 }

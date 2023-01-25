@@ -4,7 +4,6 @@ using Code.Camera;
 using Code.Characters;
 using Code.Interactable;
 using Code.Tiles;
-using Code.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
@@ -34,6 +33,7 @@ namespace Code.MouseController {
         private LTDescr CameraFocusTween;
         private Vector3 CameraFocusPosition;
 
+        private Builder PhantomBuildingBuilder;
         private LTDescr MovePhantomBuildingTween;
         private LTDescr EnablePhantomBuildingTween;
         private bool PhantomBuildingEnabled;
@@ -128,7 +128,7 @@ namespace Code.MouseController {
                 }
 
                 Tile tile = this.GetTileUnderMouse();
-                if (tile is null || !tile.Walkable || !tile.Seen) {
+                if (tile is null || !tile.Walkable || !tile.Seen || tile.Occupied) {
                     this.HidePhantomBuilding();
                     return;
                 }
@@ -144,6 +144,7 @@ namespace Code.MouseController {
                     .setEaseOutQuad()
                     .setOnComplete(() => this.MovePhantomBuildingTween = null);
                 this.PhantomBuilding.GridPosition = tile.GridPosition;
+                this.PhantomBuilding.Tile = tile;
             }
             #endregion
 
@@ -152,6 +153,11 @@ namespace Code.MouseController {
             _Zoom();
             _CheckSelectableUnderMouse();
             _PlacePhantomBuilding();
+        }
+
+        public void CreatePhantomBuilding(Builder builder, PhantomBuilding phantomBuilding) {
+            this.PhantomBuildingBuilder = builder;
+            this.PhantomBuilding = Instantiate(phantomBuilding);
         }
 
         private void HidePhantomBuilding() {
@@ -173,28 +179,17 @@ namespace Code.MouseController {
             this.CameraAngleVelocity = -this.MousePositionDelta / 30;
         }
 
-
         private void Select() {
             if (this.PhantomBuilding is not null && this.PhantomBuildingEnabled) {
-                this.PhantomBuilding.Build();
+                Building building = this.PhantomBuilding.Build();
                 this.PhantomBuilding = null;
+                this.PhantomBuildingBuilder.InteractWith(building);
+                this.PhantomBuildingBuilder = null;
                 return;
             }
 
             switch (this.Selected) {
                 case null:
-                    /*
-                     *  - Nothing selected (this.Selected == null)
-                     *      - Click on player (this.MouseOver is Player)
-                     *          -> Select player
-                     *      - Click on enemy (this.MouseOver is Enemy)
-                     *          -> Show enemy infos? TO-DO later
-                     *      - Click on building (this.MouseOver is Building)
-                     *          -> Show building info? TO-DO later
-                     *      - Click on tile (this.MouseOver == null)
-                     *          -> Do nothing
-                     */
-
                     switch (this.MouseOver) {
                         case Player mouseOver:
                             this.SelectEntity(mouseOver);
@@ -209,18 +204,6 @@ namespace Code.MouseController {
                     }
                     break;
                 case Player selected:
-                    /*
-                     *  - Player selected (this.Selected is Player)
-                     *      - Click on player (this.MouseOver is Player)
-                     *          -> Deselect selected, select new
-                     *      - Click on enemy (this.MouseOver is Enemy)
-                     *          -> ???
-                     *      - Click on building (this.MouseOver is Building)
-                     *          -> Deselect selected, select new
-                     *      - Click on tile (this.MouseOver == null)
-                     *          -> Move selected to tile
-                     */
-
                     switch (this.MouseOver) {
                         case Player mouseOver:
                             this.SelectEntity(mouseOver);
@@ -238,18 +221,6 @@ namespace Code.MouseController {
                     }
                     break;
                 case Building selected:
-                    /*
-                     *  - Building selected (this.Selected is Building)
-                     *      - Click on player (this.MouseOver is Player)
-                     *          -> Deselect selected, select new
-                     *      - Click on enemy (this.MouseOver is Enemy)
-                     *          -> ???
-                     *      - Click on building (this.MouseOver is Building)
-                     *          -> Deselect selected, select new
-                     *      - Click on tile (this.MouseOver == null)
-                     *          -> Do nothing
-                     */
-
                     switch (this.MouseOver) {
                         case Player mouseOver:
                             this.SelectEntity(mouseOver);
@@ -271,6 +242,7 @@ namespace Code.MouseController {
                 this.HidePhantomBuilding();
                 this.EnablePhantomBuildingTween.setDestroyOnComplete(true);
                 this.PhantomBuilding = null;
+                this.PhantomBuildingBuilder = null;
                 return;
             }
 
@@ -314,6 +286,8 @@ namespace Code.MouseController {
                 return;
             this.Selected.Deselect();
             this.Selected.MouseExit();
+            if (this.Selected is Player player)
+                player.OnDeselect();
             this.Selected = null;
         }
 
@@ -323,6 +297,8 @@ namespace Code.MouseController {
             this.Deselect();
             this.Selected = selectable;
             this.Selected.Select();
+            if (this.Selected is Player player)
+                player.OnSelect();
         }
 
         private void FocusOn(Vector3 position) {

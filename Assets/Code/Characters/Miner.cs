@@ -106,6 +106,7 @@ namespace Code.Characters {
                     this.MineTile = mine.GetComponentInParent<Tile>();
                     this.MineTile.Feedback();
                     this.SetPath(this.MineTile);
+                    this.MouseController.Deselect(this);
                     break;
                 case Interactable.Castle:
                     this.MineTile = null;

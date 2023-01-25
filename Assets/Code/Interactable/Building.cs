@@ -1,10 +1,17 @@
-﻿using UnityEngine;
+﻿using System;
+using Code.Tiles;
+using Code.UI;
+using UnityEngine;
 
 namespace Code.Interactable {
     public abstract class Building : Selectable, IInteractable, IWithWorldCanvas {
         [field: SerializeField] protected Canvas MouseOverCanvas;
 
         private LTDescr PopupTween;
+        [field: SerializeField] public bool Completed { get; private set; }
+        [field: SerializeField] private ProgressiveBarUI ProgressBar;
+        [field: SerializeField] private int Durability;
+        [field: SerializeField] private int TotalDurability;
 
         protected void Start() {
             this.MouseOverCanvas.worldCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityEngine.Camera>();
@@ -50,6 +57,28 @@ namespace Code.Interactable {
             this.PopupTween = LeanTween.scale(this.MouseOverCanvas.gameObject, Vector3.one, duration * 0.25f)
                 .setEaseOutBack()
                 .setOnComplete(() => this.PopupTween = null);
+        }
+
+        public void SetCompleted() {
+            this.SetDurability(this.TotalDurability);
+        }
+
+        private void SetDurability(int durability) {
+            this.Durability = Math.Min(durability, this.TotalDurability);
+            float ratio = (float)this.Durability / this.TotalDurability;
+            this.ProgressBar.UpdateRatio(ratio);
+            if (this.Durability < this.TotalDurability)
+                return;
+            this.GetComponentInParent<Tile>().Feedback();
+            this.Completed = true;
+        }
+
+        public void AddDurability(int durability) {
+            this.SetDurability(durability + this.Durability);
+        }
+
+        public virtual bool CanBuild(ResourcesManager.ResourcesManager resourcesManager) {
+            return false;
         }
     }
 }
