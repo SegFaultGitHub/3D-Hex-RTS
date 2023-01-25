@@ -540,6 +540,9 @@ MonoBehaviour:
     Tiles: []
     Complete: 0
     RenewAt: 0
+  <UICreationPrefab>k__BackingField: {fileID: 1707830637302018176, guid: 30e26d6afab9704419d78a40780ecd23,
+    type: 3}
+  <CreationDuration>k__BackingField: 2000
   FieldOfView: 3
   CarryingCapacity: 40
   Carrying: 0

@@ -509,12 +509,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GroundTile: {fileID: 0}
   Speed: 0.12
+  Canvas: {fileID: 585314685409768076}
   <Path>k__BackingField:
     Destination: {fileID: 0}
     Tiles: []
     Complete: 0
     RenewAt: 0
-  Canvas: {fileID: 585314685409768076}
+  <UICreationPrefab>k__BackingField: {fileID: 1707830637302018176, guid: 82fbdc4367ef34d48a6ef224dc6b4f4b,
+    type: 3}
+  <CreationDuration>k__BackingField: 2000
   FieldOfView: 3
   CarryingCapacity: 40
   Carrying: 0

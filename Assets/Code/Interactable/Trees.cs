@@ -12,14 +12,15 @@ namespace Code.Interactable {
 
     public class Trees : Building {
         [field: SerializeField] private int MinQuantity, MaxQuantity;
-        [field: SerializeField] private RectMask2D RectMask;
+        [field: SerializeField] private GameObject TreesModel;
+        [field: SerializeField] private int Quantity { get; set; }
+
         private int InitialQuantity;
         private LTDescr Tween;
 
         [Space, Header("UI")]
         private float UIWidth;
-        [field: SerializeField] private int Quantity { get; set; }
-
+        [field: SerializeField] private RectMask2D RectMask;
 
         private new void Start() {
             base.Start();
@@ -34,13 +35,13 @@ namespace Code.Interactable {
 
         private void Shake() {
             if (this.Tween != null) return;
-            this.Tween = LeanTween.rotateZ(this.gameObject, 5, .1f)
+            this.Tween = LeanTween.rotateZ(this.TreesModel, 5, .1f)
                 .setOnComplete(
                     () => {
-                        LeanTween.rotateZ(this.gameObject, -5, .2f)
+                        LeanTween.rotateZ(this.TreesModel, -5, .2f)
                             .setOnComplete(
                                 () => {
-                                    LeanTween.rotateZ(this.gameObject, 0, .1f).setOnComplete(() => this.Tween = null);
+                                    LeanTween.rotateZ(this.TreesModel, 0, .1f).setOnComplete(() => this.Tween = null);
                                 }
                             );
                     }

@@ -7,11 +7,12 @@ using UnityEngine;
 namespace Code.Characters {
     public class Lumberjack : Player {
 
+
         private static readonly int ATTACK = Animator.StringToHash("Attack");
-        [SerializeField] private int CarryingCapacity;
-        [SerializeField] private int Carrying;
-        [SerializeField] private Tile TreeTile;
-        [SerializeField] private long ChopCooldown;
+        [field: SerializeField] private int CarryingCapacity;
+        [field: SerializeField] private int Carrying;
+        [field: SerializeField] private Tile TreeTile;
+        [field: SerializeField] private long ChopCooldown;
         [field: SerializeField] private TMP_Text CarryingText;
         private _Behaviour Behaviour;
 

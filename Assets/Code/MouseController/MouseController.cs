@@ -4,6 +4,7 @@ using Code.Camera;
 using Code.Characters;
 using Code.Interactable;
 using Code.Tiles;
+using Code.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
@@ -37,6 +38,8 @@ namespace Code.MouseController {
         private LTDescr EnablePhantomBuildingTween;
         private bool PhantomBuildingEnabled;
         [field: SerializeField] private PhantomBuilding PhantomBuilding;
+
+        private bool CameraMoving => this.Input.MoveCameraInProgress || this.Input.RotateCameraInProgress;
 
         private void Start() {
             this.Input = new _Input();
@@ -89,6 +92,8 @@ namespace Code.MouseController {
                     this.Camera.fieldOfView = this.TargetCameraFOV;
             }
             void _CheckSelectableUnderMouse() {
+                if (this.CameraMoving) return;
+
                 Selectable previous = this.MouseOver;
                 this.MouseOver = this.Raycast<Selectable>(this.MouseCollisionLayer);
 
@@ -115,6 +120,7 @@ namespace Code.MouseController {
                     .setOnComplete(() => this.EnablePhantomBuildingTween = null);
             }
             void _PlacePhantomBuilding() {
+                if (this.CameraMoving) return;
                 if (this.PhantomBuilding is null) return;
                 if (this.MouseOver is not null) {
                     this.HidePhantomBuilding();
@@ -134,8 +140,8 @@ namespace Code.MouseController {
                 if (this.PhantomBuilding.GridPosition == tile.GridPosition)
                     return;
                 if (this.MovePhantomBuildingTween != null) LeanTween.cancel(this.MovePhantomBuildingTween.id);
-                this.MovePhantomBuildingTween = LeanTween.move(this.PhantomBuilding.gameObject, position, 0.1f)
-                    .setEaseInOutQuad()
+                this.MovePhantomBuildingTween = LeanTween.move(this.PhantomBuilding.gameObject, position, 0.05f)
+                    .setEaseOutQuad()
                     .setOnComplete(() => this.MovePhantomBuildingTween = null);
                 this.PhantomBuilding.GridPosition = tile.GridPosition;
             }
