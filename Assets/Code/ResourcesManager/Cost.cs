@@ -1,6 +1,7 @@
 using System;
 using Code.Characters;
 using Code.Enums;
+using Code.Interactable;
 using TMPro;
 using UnityEngine;
 
@@ -18,6 +19,9 @@ namespace Code.ResourcesManager {
                     break;
                 case Buyable.Builder:
                     this.SetText(Builder.GOLD_COST, Builder.WOOD_COST);
+                    break;
+                case Buyable.Barracks:
+                    this.SetText(Barracks.GOLD_COST, Barracks.WOOD_COST);
                     break;
                 default: throw new Exception($"[Cost:Start] Unexpected Buyable {this.Buyable}");
             }

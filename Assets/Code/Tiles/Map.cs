@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Code.Camera;
 using Code.Enums;
+using Code.Interactable;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -42,10 +43,10 @@ namespace Code.Tiles {
         [field: SerializeField] private Tile Sand { get; set; }
         [field: SerializeField] private Tile Grass { get; set; }
         [field: SerializeField] private Tile Rock { get; set; }
-        [field: SerializeField] private GameObject Trees { get; set; }
+        [field: SerializeField] private Trees Trees { get; set; }
         [field: SerializeField] private List<GameObject> TreesDetails { get; set; }
-        [field: SerializeField] private GameObject Castle { get; set; }
-        [field: SerializeField] private GameObject Mine { get; set; }
+        [field: SerializeField] private Castle Castle { get; set; }
+        [field: SerializeField] private Mine Mine { get; set; }
         [field: SerializeField] private int Radius { get; set; }
 
         private void Start() {
@@ -96,7 +97,7 @@ namespace Code.Tiles {
 
             if (this.MapType == MapType.Playable) {
                 Tile tile = Utils.Utils.Sample(this.MineTiles);
-                GameObject mine = Instantiate(this.Mine, tile.Objects.transform);
+                Mine mine = Instantiate(this.Mine, tile.Objects.transform);
                 tile.name = $"Mine - {tile.name}";
                 mine.transform.LookAt(this.PlayerCastle!.transform);
                 tile.Walkable = false;
@@ -202,7 +203,9 @@ namespace Code.Tiles {
                         GameObject trees;
                         if (diff > TREE_THRESHOLD * 0.8f && treesDetailsNoise > 0.5f) {
                             trees = Instantiate(Utils.Utils.Sample(this.TreesDetails), tile.Objects.transform);
-                        } else { trees = Instantiate(this.Trees, tile.Objects.transform); }
+                        } else {
+                            trees = Instantiate(this.Trees, tile.Objects.transform).gameObject;
+                        }
 
                         trees.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
                         tile.Walkable = false;
@@ -224,7 +227,8 @@ namespace Code.Tiles {
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (this.MapType) {
                 case MapType.Playable when gridPosition == this.BasePosition: {
-                    GameObject castle = Instantiate(this.Castle, tile.Objects.transform);
+                    Castle castle = Instantiate(this.Castle, tile.Objects.transform);
+                    castle.SetCompleted();
                     tile.name = $"Castle - {tile.name}";
                     castle.transform.eulerAngles = new Vector3(
                         0,

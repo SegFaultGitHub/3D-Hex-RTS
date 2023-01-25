@@ -551,6 +551,24 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5935730537372417154, guid: 90754e7bde5387c4285c6813e8e91a77,
         type: 3}
+      propertyPath: <Mine>k__BackingField
+      value: 
+      objectReference: {fileID: 8379970368344715880, guid: 5ea555457638c974fb7df001b7382720,
+        type: 3}
+    - target: {fileID: 5935730537372417154, guid: 90754e7bde5387c4285c6813e8e91a77,
+        type: 3}
+      propertyPath: <Trees>k__BackingField
+      value: 
+      objectReference: {fileID: 1352096966498530619, guid: 3f5111f24dcaa514ba3330577bf904bc,
+        type: 3}
+    - target: {fileID: 5935730537372417154, guid: 90754e7bde5387c4285c6813e8e91a77,
+        type: 3}
+      propertyPath: <Castle>k__BackingField
+      value: 
+      objectReference: {fileID: 285909653934502534, guid: d0a061ffdb4899e4bac7854e966cb2e0,
+        type: 3}
+    - target: {fileID: 5935730537372417154, guid: 90754e7bde5387c4285c6813e8e91a77,
+        type: 3}
       propertyPath: <Radius>k__BackingField
       value: 75
       objectReference: {fileID: 0}

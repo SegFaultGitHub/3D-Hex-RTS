@@ -2,6 +2,7 @@
     public enum Buyable {
         Lumberjack,
         Miner,
-        Builder
+        Builder,
+        Barracks
     }
 }

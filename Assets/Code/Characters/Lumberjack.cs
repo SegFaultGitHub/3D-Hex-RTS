@@ -6,8 +6,6 @@ using UnityEngine;
 
 namespace Code.Characters {
     public class Lumberjack : Player {
-
-
         private static readonly int ATTACK = Animator.StringToHash("Attack");
         [field: SerializeField] private int CarryingCapacity;
         [field: SerializeField] private int Carrying;
@@ -18,6 +16,7 @@ namespace Code.Characters {
 
         private Tile Castle;
         private long LastChop;
+        private MouseController.MouseController MouseController;
         private ResourcesManager.ResourcesManager ResourcesManager;
         public const int GOLD_COST = 50;
         public const int WOOD_COST = 35;
@@ -27,6 +26,7 @@ namespace Code.Characters {
             this.Behaviour = _Behaviour.Idle;
             this.LastChop = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             this.Castle = GameObject.FindGameObjectWithTag("Castle").GetComponent<Tile>();
+            this.MouseController = GameObject.FindGameObjectWithTag("MouseController").GetComponent<MouseController.MouseController>();
             this.ResourcesManager = GameObject.FindGameObjectWithTag("ResourcesManager").GetComponent<ResourcesManager.ResourcesManager>();
             this.CarryingText.SetText(this.Carrying.ToString());
         }
@@ -50,14 +50,18 @@ namespace Code.Characters {
                 return;
             }
 
-            this.RotateTowardsTrees();
+            this.RotateTowardsTile(this.TreeTile);
 
             long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             if (this.LastChop + this.ChopCooldown > now) return;
             this.LastChop = now;
 
-            this.Animator.SetTrigger(ATTACK);
             Trees trees = this.TreeTile.GetComponentInChildren<Trees>();
+            if (trees is null) {
+                this.FindNearestTrees();
+                return;
+            }
+            this.Animator.SetTrigger(ATTACK);
             TreeConsumption treeConsumption = trees.Consume(1);
             this.Carrying += treeConsumption.Quantity;
             this.CarryingText.SetText(this.Carrying.ToString());
@@ -96,6 +100,7 @@ namespace Code.Characters {
                     this.TreeTile = trees.GetComponentInParent<Tile>();
                     this.TreeTile.Feedback();
                     this.SetPath(this.TreeTile);
+                    this.MouseController.Deselect(this);
                     break;
                 case Interactable.Castle:
                     this.TreeTile = null;
@@ -108,21 +113,6 @@ namespace Code.Characters {
             base.GoToTile(destination);
             this.Behaviour = _Behaviour.Idle;
             this.TreeTile = null;
-        }
-
-        private void RotateTowardsTrees() {
-            Vector3 diff = this.TreeTile.GridPosition - this.GroundTile.GridPosition;
-            float targetAngle;
-            if (diff == new Vector3(1, -1, 0)) targetAngle = 30;
-            else if (diff == new Vector3(1, 0, -1)) targetAngle = 90;
-            else if (diff == new Vector3(0, 1, -1)) targetAngle = 150;
-            else if (diff == new Vector3(-1, 1, 0)) targetAngle = 210;
-            else if (diff == new Vector3(-1, 0, 1)) targetAngle = 270;
-            else if (diff == new Vector3(0, -1, 1)) targetAngle = 330;
-            else throw new Exception("[Lumberjack:RotateTowardsTrees] Invalid diff.");
-
-            float angle = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, targetAngle, ref this.TurnSmoothVelocity, TURN_SMOOTH_TIME);
-            this.transform.rotation = Quaternion.Euler(0, angle, 0);
         }
 
         public override bool CanSummon(ResourcesManager.ResourcesManager resourcesManager) {

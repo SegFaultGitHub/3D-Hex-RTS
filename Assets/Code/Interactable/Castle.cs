@@ -158,6 +158,10 @@ namespace Code.Interactable {
             this.WoodQuantityText.text = this.ResourcesManager.Wood.ToString();
         }
 
+        public override bool CanBuild(ResourcesManager.ResourcesManager resourcesManager) {
+            return false;
+        }
+
         private void UpdateQueueUI() {
             if (this.QueueTween != null) LeanTween.cancel(this.QueueTween.id);
 

@@ -29,9 +29,7 @@ namespace Code.Interactable {
             this.UIWidth = this.MouseOverCanvas.transform.GetComponent<RectTransform>().rect.width;
         }
 
-        public override void Interact(Selectable selected) {
-            throw new NotImplementedException();
-        }
+        public override void Interact(Selectable selected) { }
 
         private void Shake() {
             if (this.Tween != null) return;

@@ -1,6 +1,5 @@
 ﻿using Code.Interactable;
 using Code.Tiles;
-using Code.UI;
 using UnityEngine;
 
 namespace Code.Characters {
