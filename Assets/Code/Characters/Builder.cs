@@ -2,6 +2,7 @@
 using System.Reflection;
 using Code.Interactable;
 using Code.Tiles;
+using Code.UI;
 using UnityEngine;
 
 namespace Code.Characters {
@@ -12,13 +13,13 @@ namespace Code.Characters {
         [field: SerializeField] private int BuildPower = 10;
         private long LastBuild;
         private _Behaviour Behaviour;
+        [field: SerializeField] private ResourcesWindow ResourcesWindow;
+
         private ResourcesManager.ResourcesManager ResourcesManager;
         private MouseController.MouseController MouseController;
 
         [field: SerializeField] private Canvas ShopCanvas;
         private LTDescr Tween;
-
-        [field: SerializeField] private PhantomBuilding Barracks;
 
         public const int GOLD_COST = 100;
         public const int WOOD_COST = 100;
@@ -27,10 +28,15 @@ namespace Code.Characters {
             base.Awake();
             this.Behaviour = _Behaviour.Idle;
             this.LastBuild = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
             this.ShopCanvas.worldCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityEngine.Camera>();
             this.ShopCanvas.gameObject.SetActive(false);
             this.ShopCanvas.transform.localScale *= 0;
+
             this.ResourcesManager = GameObject.FindGameObjectWithTag("ResourcesManager").GetComponent<ResourcesManager.ResourcesManager>();
+            this.ResourcesManager.ResourcesWindows.Add(this.ResourcesWindow);
+            this.ResourcesWindow.UpdateResources(this.ResourcesManager);
+
             this.MouseController = GameObject.FindGameObjectWithTag("MouseController").GetComponent<MouseController.MouseController>();
         }
 
@@ -71,7 +77,7 @@ namespace Code.Characters {
             switch (interactable) {
                 case Building { Completed: false } building:
                     this.Behaviour = _Behaviour.Building;
-                    this.BuildingTile = building.GetComponentInParent<Tile>();
+                    this.BuildingTile = building.Tile;
                     this.BuildingTile.Feedback();
                     this.SetPath(this.BuildingTile);
                     this.MouseController.Deselect(this);
@@ -89,18 +95,8 @@ namespace Code.Characters {
             return resourcesManager.Gold >= GOLD_COST && resourcesManager.Wood >= WOOD_COST;
         }
 
-        public void CreatePhantomBarracks() {
-            this.CreatePhantomBuilding(this.Barracks);
-        }
-
-        private void CreatePhantomBuilding(PhantomBuilding phantom) {
+        public void CreatePhantomBuilding(PhantomBuilding phantom) {
             if (!phantom.OnCompletionBuilding.CanBuild(this.ResourcesManager)) return;
-
-            int goldCost = (int)phantom.OnCompletionBuilding.GetType().GetField("GOLD_COST", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
-            int woodCost = (int)phantom.OnCompletionBuilding.GetType().GetField("WOOD_COST", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
-
-            this.ResourcesManager.RemoveGold(goldCost);
-            this.ResourcesManager.RemoveWood(woodCost);
 
             this.MouseController.CreatePhantomBuilding(this, phantom);
             this.MouseController.Deselect(this);

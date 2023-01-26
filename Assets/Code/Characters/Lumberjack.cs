@@ -25,7 +25,6 @@ namespace Code.Characters {
             base.Awake();
             this.Behaviour = _Behaviour.Idle;
             this.LastChop = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            this.Castle = GameObject.FindGameObjectWithTag("Castle").GetComponent<Tile>();
             this.MouseController = GameObject.FindGameObjectWithTag("MouseController").GetComponent<MouseController.MouseController>();
             this.ResourcesManager = GameObject.FindGameObjectWithTag("ResourcesManager").GetComponent<ResourcesManager.ResourcesManager>();
             this.CarryingText.SetText(this.Carrying.ToString());
@@ -88,8 +87,13 @@ namespace Code.Characters {
         }
 
         private void ReturnToCastle() {
+            this.ReturnToCastle(this.FindNearestCastle());
+        }
+
+        private void ReturnToCastle(Tile castle) {
             this.Behaviour = _Behaviour.Storing;
-            this.SetPath(this.Castle);
+            this.Castle = castle;
+            this.SetPath(castle);
         }
 
         public override void InteractWith(IInteractable interactable) {
@@ -97,14 +101,14 @@ namespace Code.Characters {
             switch (interactable) {
                 case Trees trees:
                     this.Behaviour = _Behaviour.Chopping;
-                    this.TreeTile = trees.GetComponentInParent<Tile>();
+                    this.TreeTile = trees.Tile;
                     this.TreeTile.Feedback();
                     this.SetPath(this.TreeTile);
                     this.MouseController.Deselect(this);
                     break;
-                case Interactable.Castle:
+                case Castle castle:
                     this.TreeTile = null;
-                    this.ReturnToCastle();
+                    this.ReturnToCastle(castle.Tile);
                     break;
             }
         }

@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Code.Characters;
-using Code.Tiles;
 using Code.UI;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,10 +22,10 @@ namespace Code.Interactable {
 
         [field: SerializeField] private Canvas Canvas;
 
-        [field: SerializeField] private TMP_Text GoldQuantityText, WoodQuantityText;
+        [field: SerializeField] private ResourcesWindow ResourcesWindow;
+
         private ResourcesManager.ResourcesManager ResourcesManager;
 
-        private Tile Tile;
         private LTDescr Tween;
 
         [Space, Header("Queue")]
@@ -38,17 +36,18 @@ namespace Code.Interactable {
         private bool QueueWindowOpened;
         private LTDescr QueueTween;
 
+        public const int GOLD_COST = 500;
+        public const int WOOD_COST = 800;
 
-        private new void Start() {
-            base.Start();
-            this.Tile = this.GetComponentInParent<Tile>();
+        private new void Awake() {
+            base.Awake();
             this.Canvas.worldCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityEngine.Camera>();
             this.Canvas.gameObject.SetActive(false);
             this.Canvas.transform.localScale *= 0;
 
             this.ResourcesManager = GameObject.FindGameObjectWithTag("ResourcesManager").GetComponent<ResourcesManager.ResourcesManager>();
-            this.ResourcesManager.Castle = this;
-            this.UpdateResources();
+            this.ResourcesManager.ResourcesWindows.Add(this.ResourcesWindow);
+            this.ResourcesWindow.UpdateResources(this.ResourcesManager);
 
             this.QueueWindowOpened = false;
             this.QueueWindow.transform.localScale *= 0;
@@ -81,6 +80,7 @@ namespace Code.Interactable {
         }
 
         public override void Interact(Selectable selected) {
+            if (!this.Completed) return;
             this.MouseExit();
 
             if (this.Tween != null) LeanTween.cancel(this.Tween.id);
@@ -111,19 +111,7 @@ namespace Code.Interactable {
                 );
         }
 
-        public void SpawnLumberjack() {
-            this.AddToQueue(this.LumberjackPrefab);
-        }
-
-        public void SpawnMiner() {
-            this.AddToQueue(this.MinerPrefab);
-        }
-
-        public void SpawnBuilder() {
-            this.AddToQueue(this.BuilderPrefab);
-        }
-
-        private void AddToQueue(Player player) {
+        public void AddToQueue(Player player) {
             if (!player.CanSummon(this.ResourcesManager)) return;
 
             int goldCost = (int)player.GetType().GetField("GOLD_COST", BindingFlags.Public | BindingFlags.Static)!.GetValue(null);
@@ -153,13 +141,8 @@ namespace Code.Interactable {
             player.GoToTile(this.Tile.GetRandomNeighbour(player.StepOffset, 2, 3));
         }
 
-        public void UpdateResources() {
-            this.GoldQuantityText.text = this.ResourcesManager.Gold.ToString();
-            this.WoodQuantityText.text = this.ResourcesManager.Wood.ToString();
-        }
-
         public override bool CanBuild(ResourcesManager.ResourcesManager resourcesManager) {
-            return false;
+            return resourcesManager.Gold >= GOLD_COST && resourcesManager.Wood >= WOOD_COST;
         }
 
         private void UpdateQueueUI() {

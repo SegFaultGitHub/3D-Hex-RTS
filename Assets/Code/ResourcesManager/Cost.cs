@@ -23,6 +23,12 @@ namespace Code.ResourcesManager {
                 case Buyable.Barracks:
                     this.SetText(Barracks.GOLD_COST, Barracks.WOOD_COST);
                     break;
+                case Buyable.Castle:
+                    this.SetText(Castle.GOLD_COST, Castle.WOOD_COST);
+                    break;
+                case Buyable.ArcheryRange:
+                    this.SetText(ArcheryRange.GOLD_COST, ArcheryRange.WOOD_COST);
+                    break;
                 default: throw new Exception($"[Cost:Start] Unexpected Buyable {this.Buyable}");
             }
         }
