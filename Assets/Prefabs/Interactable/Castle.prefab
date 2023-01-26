@@ -300,6 +300,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MouseOverCanvas: {fileID: 6301882581837555760}
+  <Completed>k__BackingField: 0
   ProgressBar: {fileID: 2366287377101179058}
   Durability: 0
   TotalDurability: 1000
