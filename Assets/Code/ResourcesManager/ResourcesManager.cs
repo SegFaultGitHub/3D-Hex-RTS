@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Code.Interactable;
+﻿using System.Collections.Generic;
 using Code.UI;
 using UnityEngine;
 

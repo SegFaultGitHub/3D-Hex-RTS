@@ -7,6 +7,8 @@ using UnityEngine;
 
 namespace Code.Characters {
     public class Miner : Player {
+        public const int GOLD_COST = 35;
+        public const int WOOD_COST = 50;
 
         [SerializeField] private int CarryingCapacity;
         [SerializeField] private int Carrying;
@@ -22,8 +24,6 @@ namespace Code.Characters {
         private MouseController.MouseController MouseController;
         private ResourcesManager.ResourcesManager ResourcesManager;
         private LTDescr Tween;
-        public const int GOLD_COST = 35;
-        public const int WOOD_COST = 50;
 
         protected override void Awake() {
             base.Awake();

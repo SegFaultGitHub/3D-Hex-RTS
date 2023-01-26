@@ -1,8 +1,5 @@
-﻿using System;
-using Code.Tiles;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 namespace Code.Interactable {
     public struct TreeConsumption {
@@ -13,14 +10,14 @@ namespace Code.Interactable {
     public class Trees : Building {
         [field: SerializeField] private int MinQuantity, MaxQuantity;
         [field: SerializeField] private GameObject TreesModel;
-        [field: SerializeField] private int Quantity { get; set; }
+        [field: SerializeField] private RectMask2D RectMask;
 
         private int InitialQuantity;
         private LTDescr Tween;
 
         [Space, Header("UI")]
         private float UIWidth;
-        [field: SerializeField] private RectMask2D RectMask;
+        [field: SerializeField] private int Quantity { get; set; }
 
         protected override void Awake() {
             base.Awake();

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using Code.Interactable;
 using Code.Tiles;
 using Code.UI;
@@ -7,22 +6,21 @@ using UnityEngine;
 
 namespace Code.Characters {
     public class Builder : Player {
+        public const int GOLD_COST = 100;
+        public const int WOOD_COST = 100;
         private static readonly int ATTACK = Animator.StringToHash("Attack");
         [field: SerializeField] private Tile BuildingTile;
         [field: SerializeField] private long BuildCooldown;
         [field: SerializeField] private int BuildPower = 10;
-        private long LastBuild;
-        private _Behaviour Behaviour;
         [field: SerializeField] private ResourcesWindow ResourcesWindow;
 
-        private ResourcesManager.ResourcesManager ResourcesManager;
+        [field: SerializeField] private Canvas ShopCanvas;
+        private _Behaviour Behaviour;
+        private long LastBuild;
         private MouseController.MouseController MouseController;
 
-        [field: SerializeField] private Canvas ShopCanvas;
+        private ResourcesManager.ResourcesManager ResourcesManager;
         private LTDescr Tween;
-
-        public const int GOLD_COST = 100;
-        public const int WOOD_COST = 100;
 
         protected override void Awake() {
             base.Awake();

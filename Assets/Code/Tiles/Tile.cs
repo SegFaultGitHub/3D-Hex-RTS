@@ -22,7 +22,7 @@ namespace Code.Tiles {
 
         [field: SerializeField] public bool AllowMultipleEntities { get; set; }
 
-        private void Awake() {
+        protected virtual void Awake() {
             this.Model = this.transform.Find("Model").gameObject;
             this.Objects = this.transform.Find("Model/Objects").gameObject;
             this.Fog = this.transform.Find("Fog").gameObject;

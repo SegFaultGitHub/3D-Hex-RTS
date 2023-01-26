@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace Code.Characters {
     public class Lumberjack : Player {
+        public const int GOLD_COST = 50;
+        public const int WOOD_COST = 35;
         private static readonly int ATTACK = Animator.StringToHash("Attack");
         [field: SerializeField] private int CarryingCapacity;
         [field: SerializeField] private int Carrying;
@@ -18,8 +20,6 @@ namespace Code.Characters {
         private long LastChop;
         private MouseController.MouseController MouseController;
         private ResourcesManager.ResourcesManager ResourcesManager;
-        public const int GOLD_COST = 50;
-        public const int WOOD_COST = 35;
 
         protected override void Awake() {
             base.Awake();

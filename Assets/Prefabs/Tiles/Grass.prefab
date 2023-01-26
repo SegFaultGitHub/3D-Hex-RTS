@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7611822764385221203}
-  - component: {fileID: 7640562468794141420}
+  - component: {fileID: 196470316538837867}
   m_Layer: 6
   m_Name: Grass
   m_TagString: Untagged
@@ -35,7 +35,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7640562468794141420
+--- !u!114 &196470316538837867
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,13 +44,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 545739784931476272}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28c5c3323476f164bb8729c4ce75b136, type: 3}
+  m_Script: {fileID: 11500000, guid: 73bdbf37e1134308b0c03bb0ad75c9ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <GridPosition>k__BackingField: {x: 0, y: 0, z: 0}
   <Position>k__BackingField: {x: 0, y: 0, z: 0}
   <Walkable>k__BackingField: 1
   <Occupied>k__BackingField: 0
+  <AllowMultipleEntities>k__BackingField: 0
+  Decoration: {fileID: 1961089182782557665, guid: 8c05556f25337b747b04325d6d20e69c,
+    type: 3}
 --- !u!1 &3920099011355417110
 GameObject:
   m_ObjectHideFlags: 0

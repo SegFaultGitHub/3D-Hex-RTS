@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Code.Characters {
     public abstract class Player : Character {
         [field: SerializeField] private int FieldOfView;
-        
+
         protected override void Update() {
             Tile groundTile = this.GroundTile;
             base.Update();
@@ -13,7 +13,7 @@ namespace Code.Characters {
                 this.GroundTile.Explore(this.FieldOfView);
         }
 
-        public abstract void InteractWith(IInteractable interactable);
+        public virtual void InteractWith(IInteractable interactable) { }
 
         public abstract bool CanSummon(ResourcesManager.ResourcesManager resourcesManager);
     }

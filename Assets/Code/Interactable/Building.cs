@@ -6,12 +6,12 @@ using UnityEngine;
 namespace Code.Interactable {
     public abstract class Building : Selectable, IInteractable, IWithWorldCanvas {
         [field: SerializeField] protected Canvas MouseOverCanvas;
-
-        private LTDescr PopupTween;
-        [field: SerializeField] public bool Completed { get; private set; }
         [field: SerializeField] private ProgressiveBarUI ProgressBar;
         [field: SerializeField] private int Durability;
         [field: SerializeField] private int TotalDurability;
+
+        private LTDescr PopupTween;
+        [field: SerializeField] public bool Completed { get; private set; }
 
         public Tile Tile { get; set; }
 

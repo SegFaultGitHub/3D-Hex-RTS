@@ -5,6 +5,8 @@
         Builder,
         Barracks,
         Castle,
-        ArcheryRange
+        ArcheryRange,
+        Warrior,
+        Samurai
     }
 }

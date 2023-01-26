@@ -29,6 +29,12 @@ namespace Code.ResourcesManager {
                 case Buyable.ArcheryRange:
                     this.SetText(ArcheryRange.GOLD_COST, ArcheryRange.WOOD_COST);
                     break;
+                case Buyable.Warrior:
+                    this.SetText(Warrior.GOLD_COST, Warrior.WOOD_COST);
+                    break;
+                case Buyable.Samurai:
+                    this.SetText(Samurai.GOLD_COST, Samurai.WOOD_COST);
+                    break;
                 default: throw new Exception($"[Cost:Start] Unexpected Buyable {this.Buyable}");
             }
         }
