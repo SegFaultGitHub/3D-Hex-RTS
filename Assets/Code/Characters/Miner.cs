@@ -30,7 +30,6 @@ namespace Code.Characters {
             this.InitialScale = this.transform.localScale;
             this.Behaviour = _Behaviour.Idle;
             this.LastMine = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            this.Castle = GameObject.FindGameObjectWithTag("Castle").GetComponent<Tile>();
             this.ResourcesManager = GameObject.FindGameObjectWithTag("ResourcesManager").GetComponent<ResourcesManager.ResourcesManager>();
             this.MouseController = GameObject.FindGameObjectWithTag("MouseController").GetComponent<MouseController.MouseController>();
         }
@@ -90,12 +89,18 @@ namespace Code.Characters {
                 this.SetPath(this.MineTile);
             }
         }
+
         private void ReturnToCastle() {
+            this.ReturnToCastle(this.FindNearestCastle());
+        }
+
+        private void ReturnToCastle(Tile castle) {
             if (this.Tween != null) LeanTween.cancel(this.Tween.id);
             this.Tween = LeanTween.scale(this.gameObject, this.InitialScale, 0.3f).setOnComplete(() => this.Tween = null);
 
             this.Behaviour = _Behaviour.Storing;
-            this.SetPath(this.Castle);
+            this.Castle = castle;
+            this.SetPath(castle);
         }
 
         public override void InteractWith(IInteractable interactable) {
@@ -103,14 +108,14 @@ namespace Code.Characters {
             switch (interactable) {
                 case Mine mine:
                     this.Behaviour = _Behaviour.Mining;
-                    this.MineTile = mine.GetComponentInParent<Tile>();
+                    this.MineTile = mine.Tile;
                     this.MineTile.Feedback();
                     this.SetPath(this.MineTile);
                     this.MouseController.Deselect(this);
                     break;
-                case Interactable.Castle:
+                case Castle castle:
                     this.MineTile = null;
-                    this.ReturnToCastle();
+                    this.ReturnToCastle(castle.Tile);
                     break;
             }
         }

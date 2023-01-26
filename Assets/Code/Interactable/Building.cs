@@ -13,10 +13,14 @@ namespace Code.Interactable {
         [field: SerializeField] private int Durability;
         [field: SerializeField] private int TotalDurability;
 
-        protected void Start() {
+        public Tile Tile { get; set; }
+
+        protected override void Awake() {
+            base.Awake();
             this.MouseOverCanvas.worldCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityEngine.Camera>();
             this.MouseOverCanvas.gameObject.SetActive(false);
             this.MouseOverCanvas.transform.localScale *= 0;
+            this.Tile = this.GetComponentInParent<Tile>();
         }
 
         protected void Update() {
@@ -59,22 +63,22 @@ namespace Code.Interactable {
                 .setOnComplete(() => this.PopupTween = null);
         }
 
-        public void SetCompleted() {
-            this.SetDurability(this.TotalDurability);
+        public void SetCompleted(bool feedback = true) {
+            this.SetDurability(this.TotalDurability, feedback);
         }
 
-        private void SetDurability(int durability) {
+        private void SetDurability(int durability, bool feedback = true) {
             this.Durability = Math.Min(durability, this.TotalDurability);
             float ratio = (float)this.Durability / this.TotalDurability;
             this.ProgressBar.UpdateRatio(ratio);
             if (this.Durability < this.TotalDurability)
                 return;
-            this.GetComponentInParent<Tile>().Feedback();
+            if (feedback) this.Tile.Feedback();
             this.Completed = true;
         }
 
-        public void AddDurability(int durability) {
-            this.SetDurability(durability + this.Durability);
+        public void AddDurability(int durability, bool feedback = true) {
+            this.SetDurability(durability + this.Durability, feedback);
         }
 
         public virtual bool CanBuild(ResourcesManager.ResourcesManager resourcesManager) {

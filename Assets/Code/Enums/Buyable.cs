@@ -3,6 +3,8 @@
         Lumberjack,
         Miner,
         Builder,
-        Barracks
+        Barracks,
+        Castle,
+        ArcheryRange
     }
 }

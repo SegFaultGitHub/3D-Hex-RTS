@@ -22,8 +22,8 @@ namespace Code.Interactable {
         private float UIWidth;
         [field: SerializeField] private RectMask2D RectMask;
 
-        private new void Start() {
-            base.Start();
+        protected override void Awake() {
+            base.Awake();
             this.Quantity = Random.Range(this.MinQuantity, this.MaxQuantity);
             this.InitialQuantity = this.Quantity;
             this.UIWidth = this.MouseOverCanvas.transform.GetComponent<RectTransform>().rect.width;
@@ -57,8 +57,7 @@ namespace Code.Interactable {
                     Quantity = quantity,
                     Depleted = false
                 };
-            Tile tile = this.GetComponentInParent<Tile>();
-            tile.Walkable = true;
+            this.Tile.Walkable = true;
             Destroy(this.gameObject);
             return new TreeConsumption {
                 Quantity = quantity,

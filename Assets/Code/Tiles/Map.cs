@@ -228,7 +228,7 @@ namespace Code.Tiles {
             switch (this.MapType) {
                 case MapType.Playable when gridPosition == this.BasePosition: {
                     Castle castle = Instantiate(this.Castle, tile.Objects.transform);
-                    castle.SetCompleted();
+                    castle.SetCompleted(false);
                     tile.name = $"Castle - {tile.name}";
                     castle.transform.eulerAngles = new Vector3(
                         0,
@@ -237,7 +237,6 @@ namespace Code.Tiles {
                     );
                     this.PlayerCastle = tile;
                     tile.Walkable = false;
-                    tile.gameObject.tag = "Castle";
                     break;
                 }
                 case MapType.Playable when distanceFromBase is >= MINE_MIN_DISTANCE and <= BASE_SIZE:

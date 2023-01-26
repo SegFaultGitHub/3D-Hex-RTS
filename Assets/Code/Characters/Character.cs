@@ -140,6 +140,25 @@ namespace Code.Characters {
             this.Controller.enabled = true;
         }
 
+        public Tile FindNearestCastle() {
+            GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("Castle");
+            Tile nearestCastle = default;
+            int shortest = short.MaxValue;
+            foreach (GameObject go in gameObjects) {
+                Castle castle = go.GetComponentInParent<Castle>();
+                if (!castle.Completed) continue;
+
+                Tile tile = go.GetComponentInParent<Tile>();
+                int distance = tile.DistanceFrom(this.GroundTile);
+                if (distance >= shortest) continue;
+
+                shortest = distance;
+                nearestCastle = tile;
+            }
+
+            return nearestCastle;
+        }
+
         public override void MouseEnter() {
             this.ShowUI();
         }
@@ -153,7 +172,8 @@ namespace Code.Characters {
 
             if (this.PopupTween != null) LeanTween.cancel(this.PopupTween.id);
 
-            this.PopupTween = LeanTween.scale(this.Canvas.gameObject, Vector3.zero, 0.25f)
+            float duration = this.Canvas.transform.localScale.x;
+            this.PopupTween = LeanTween.scale(this.Canvas.gameObject, Vector3.zero, duration * 0.25f)
                 .setEaseInBack()
                 .setOnComplete(
                     () => {
@@ -167,7 +187,8 @@ namespace Code.Characters {
             if (this.PopupTween != null) LeanTween.cancel(this.PopupTween.id);
 
             this.Canvas.gameObject.SetActive(true);
-            this.PopupTween = LeanTween.scale(this.Canvas.gameObject, Vector3.one, 0.25f)
+            float duration = 1 - this.Canvas.transform.localScale.x;
+            this.PopupTween = LeanTween.scale(this.Canvas.gameObject, Vector3.one, duration * 0.25f)
                 .setEaseOutBack()
                 .setOnComplete(() => this.PopupTween = null);
         }
@@ -181,7 +202,7 @@ namespace Code.Characters {
             else if (diff == new Vector3(-1, 1, 0)) targetAngle = 210;
             else if (diff == new Vector3(-1, 0, 1)) targetAngle = 270;
             else if (diff == new Vector3(0, -1, 1)) targetAngle = 330;
-            else throw new Exception("[Lumberjack:RotateTowardsTrees] Invalid diff.");
+            else throw new Exception("[Character:RotateTowardsTile] Invalid diff.");
 
             float angle = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, targetAngle, ref this.TurnSmoothVelocity, TURN_SMOOTH_TIME);
             this.transform.rotation = Quaternion.Euler(0, angle, 0);

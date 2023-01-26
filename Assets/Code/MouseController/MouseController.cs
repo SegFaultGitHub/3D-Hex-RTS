@@ -7,6 +7,7 @@ using Code.Tiles;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace Code.MouseController {
     public class MouseController : MonoBehaviour {
@@ -46,7 +47,7 @@ namespace Code.MouseController {
             this.Camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityEngine.Camera>();
             this.CameraController = this.Camera.GetComponent<CameraController>();
             this.TargetCameraFOV = this.Camera.fieldOfView;
-            this.Castle = GameObject.FindGameObjectWithTag("Castle").GetComponent<Tile>();
+            this.Castle = GameObject.FindGameObjectWithTag("Castle").GetComponentInParent<Tile>();
         }
 
         private void Update() {
@@ -158,6 +159,8 @@ namespace Code.MouseController {
         public void CreatePhantomBuilding(Builder builder, PhantomBuilding phantomBuilding) {
             this.PhantomBuildingBuilder = builder;
             this.PhantomBuilding = Instantiate(phantomBuilding);
+            Vector3 angles = new(0, Random.Range(0, 360), 0);
+            this.PhantomBuilding.transform.eulerAngles = angles;
         }
 
         private void HidePhantomBuilding() {

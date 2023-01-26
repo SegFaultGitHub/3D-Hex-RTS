@@ -15,29 +15,19 @@ namespace Code.Interactable {
         public abstract void MouseExit();
 
         public void Select() {
-            if (this.Tween != null)
-                LeanTween.cancel(this.Tween.id);
+            if (this.Tween != null) LeanTween.cancel(this.Tween.id);
 
             this.Tween = LeanTween.value(this.gameObject, this.Outline.OutlineColor, new Color(1f, 1f, 1f, 1f), 0.2f)
                 .setOnStart(() => this.Outline.enabled = true)
-                .setOnUpdate(
-                    color => {
-                        this.Outline.OutlineColor = color;
-                    }
-                )
+                .setOnUpdate(color => this.Outline.OutlineColor = color)
                 .setOnComplete(() => this.Tween = null);
         }
 
         public void Deselect() {
-            if (this.Tween != null)
-                LeanTween.cancel(this.Tween.id);
+            if (this.Tween != null) LeanTween.cancel(this.Tween.id);
 
             this.Tween = LeanTween.value(this.gameObject, this.Outline.OutlineColor, new Color(1f, 1f, 1f, 0f), 0.2f)
-                .setOnUpdate(
-                    color => {
-                        this.Outline.OutlineColor = color;
-                    }
-                )
+                .setOnUpdate(color => this.Outline.OutlineColor = color)
                 .setOnComplete(
                     () => {
                         this.Outline.enabled = false;

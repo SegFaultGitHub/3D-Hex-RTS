@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4c23b68b05243b4bda811106e590b13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <GridPosition>k__BackingField: {x: 5, y: -11, z: 6}
+  <GridPosition>k__BackingField: {x: 0, y: 0, z: 0}
   <OnCompletionBuilding>k__BackingField: {fileID: 6990125484186648570, guid: b7189735e67e4ab4db343649fd5c401f,
     type: 3}
 --- !u!1001 &3513480920528286600
