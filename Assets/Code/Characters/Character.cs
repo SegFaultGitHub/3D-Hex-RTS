@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace Code.Characters {
     public abstract class Character : Selectable, IWithWorldCanvas {
+
         private const float TURN_SMOOTH_TIME = 0.1f;
         private static readonly Collider[] GROUND_COLLIDER = new Collider[1];
         private static readonly Vector3 GRAVITY = new(0, -0.02f, 0);
@@ -15,8 +16,9 @@ namespace Code.Characters {
         [field: SerializeField] protected Tile GroundTile;
         [field: SerializeField] private float Speed;
 
-        [field: SerializeField] private Canvas Canvas;
         protected Animator Animator;
+
+        private CharacterNameUI CharacterNameUI;
         private bool ComputingPath;
         protected CharacterController Controller;
         private Vector3 FallingSpeed;
@@ -25,8 +27,9 @@ namespace Code.Characters {
         private Vector3 MovementDirection;
         private LTDescr PopupTween;
         private float TurnSmoothVelocity;
+        [field: SerializeField] public Enums.Character CharacterType { get; private set; }
+        public abstract string Name { get; }
         [field: SerializeField] public Path Path { protected get; set; }
-        [field: SerializeField] public ProgressiveBarUI UICreationPrefab { get; private set; }
         [field: SerializeField] public long CreationDuration { get; private set; }
 
         public float StepOffset => this.Controller.stepOffset;
@@ -40,9 +43,8 @@ namespace Code.Characters {
                 Tiles = new List<Tile>()
             };
             this.GroundCollider = this.transform.Find("Ground collider").transform;
-            this.Canvas.worldCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityEngine.Camera>();
-            this.Canvas.gameObject.SetActive(false);
-            this.Canvas.transform.localScale *= 0;
+
+            this.CharacterNameUI = this.GetComponentInChildren<CharacterNameUI>();
         }
 
         protected virtual void Update() {
@@ -75,8 +77,6 @@ namespace Code.Characters {
             }
 
             this.Animator.SetBool(MOVING, this.MovementDirection.sqrMagnitude != 0);
-
-            ((IWithWorldCanvas)this).RotateCanvas(this.Canvas);
         }
 
         private void FixedUpdate() {
@@ -140,7 +140,7 @@ namespace Code.Characters {
             this.Controller.enabled = true;
         }
 
-        public Tile FindNearestCastle() {
+        protected Tile FindNearestCastle() {
             GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("Castle");
             Tile nearestCastle = default;
             int shortest = short.MaxValue;
@@ -160,37 +160,10 @@ namespace Code.Characters {
         }
 
         public override void MouseEnter() {
-            this.ShowUI();
+            this.CharacterNameUI.Open();
         }
         public override void MouseExit() {
-            this.HideUI();
-        }
-
-        private void HideUI() {
-            if (!this.Canvas.gameObject.activeSelf)
-                return;
-
-            if (this.PopupTween != null) LeanTween.cancel(this.PopupTween.id);
-
-            float duration = this.Canvas.transform.localScale.x;
-            this.PopupTween = LeanTween.scale(this.Canvas.gameObject, Vector3.zero, duration * 0.25f)
-                .setEaseInBack()
-                .setOnComplete(
-                    () => {
-                        this.Canvas.gameObject.SetActive(false);
-                        this.PopupTween = null;
-                    }
-                );
-        }
-
-        private void ShowUI() {
-            if (this.PopupTween != null) LeanTween.cancel(this.PopupTween.id);
-
-            this.Canvas.gameObject.SetActive(true);
-            float duration = 1 - this.Canvas.transform.localScale.x;
-            this.PopupTween = LeanTween.scale(this.Canvas.gameObject, Vector3.one, duration * 0.25f)
-                .setEaseOutBack()
-                .setOnComplete(() => this.PopupTween = null);
+            this.CharacterNameUI.Close();
         }
 
         protected void RotateTowardsTile(Tile tile) {
@@ -206,6 +179,14 @@ namespace Code.Characters {
 
             float angle = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, targetAngle, ref this.TurnSmoothVelocity, TURN_SMOOTH_TIME);
             this.transform.rotation = Quaternion.Euler(0, angle, 0);
+        }
+
+        private int DistanceFrom(Tile tile) {
+            return this.GroundTile.DistanceFrom(tile);
+        }
+
+        private int DistanceFrom(Character character) {
+            return this.DistanceFrom(character.GroundTile);
         }
 
         public virtual void OnSelect() { }

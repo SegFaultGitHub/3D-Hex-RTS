@@ -108,23 +108,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 466cf9f6ad4e45843b00586a5c6975c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StartingPlayers:
+  - {fileID: 6669785677284717673, guid: 20ec3926b739e2641972daf788a19a68, type: 3}
+  - {fileID: 1277929065073831835, guid: 1ea381b1a80578747b35d9a4600f3407, type: 3}
   <Seed>k__BackingField: 0
   <MapType>k__BackingField: 0
   <Water>k__BackingField: {fileID: 7640562468794141420, guid: c18ca4bddbd3dd041b4370c21b2a7b25,
     type: 3}
   <Sand>k__BackingField: {fileID: 7640562468794141420, guid: f45982793642b6b4bab92c0a439dea74,
     type: 3}
-  <Grass>k__BackingField: {fileID: 7640562468794141420, guid: 40dbf9bd5d238134386f658e02a0d739,
+  <Grass>k__BackingField: {fileID: 196470316538837867, guid: 40dbf9bd5d238134386f658e02a0d739,
     type: 3}
   <Rock>k__BackingField: {fileID: 7640562468794141420, guid: fa106f1650ffcfd4399d1605ba9fb2e4,
     type: 3}
-  <Trees>k__BackingField: {fileID: 2076839848337974450, guid: 3f5111f24dcaa514ba3330577bf904bc,
+  <Trees>k__BackingField: {fileID: 1352096966498530619, guid: 3f5111f24dcaa514ba3330577bf904bc,
     type: 3}
   <TreesDetails>k__BackingField:
   - {fileID: 919132149155446097, guid: c441d788ac65c10409bd8a8401321507, type: 3}
   - {fileID: 919132149155446097, guid: fd21e0bbdb41977428a3228091a8814f, type: 3}
-  <Castle>k__BackingField: {fileID: 994784706248447942, guid: d0a061ffdb4899e4bac7854e966cb2e0,
+  <Castle>k__BackingField: {fileID: 285909653934502534, guid: d0a061ffdb4899e4bac7854e966cb2e0,
     type: 3}
-  <Mine>k__BackingField: {fileID: 2076839848337974450, guid: 5ea555457638c974fb7df001b7382720,
+  <Mine>k__BackingField: {fileID: 8379970368344715880, guid: 5ea555457638c974fb7df001b7382720,
     type: 3}
-  <Radius>k__BackingField: 50
+  <Radius>k__BackingField: 75

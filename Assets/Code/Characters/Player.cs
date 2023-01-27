@@ -4,7 +4,10 @@ using UnityEngine;
 
 namespace Code.Characters {
     public abstract class Player : Character {
+
         [field: SerializeField] private int FieldOfView;
+        public abstract int GoldCost { get; }
+        public abstract int WoodCost { get; }
 
         protected override void Update() {
             Tile groundTile = this.GroundTile;
@@ -15,6 +18,8 @@ namespace Code.Characters {
 
         public virtual void InteractWith(IInteractable interactable) { }
 
-        public abstract bool CanSummon(ResourcesManager.ResourcesManager resourcesManager);
+        public bool CanSummon(ResourcesManager.ResourcesManager resourcesManager) {
+            return resourcesManager.Gold >= this.GoldCost && resourcesManager.Wood >= this.WoodCost;
+        }
     }
 }

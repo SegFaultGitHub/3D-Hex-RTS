@@ -1,25 +1,26 @@
 ﻿using System;
 using Code.Interactable;
 using Code.Tiles;
-using TMPro;
 using UnityEngine;
 
 namespace Code.Characters {
     public class Lumberjack : Player {
-        public const int GOLD_COST = 50;
-        public const int WOOD_COST = 35;
+
         private static readonly int ATTACK = Animator.StringToHash("Attack");
         [field: SerializeField] private int CarryingCapacity;
         [field: SerializeField] private int Carrying;
         [field: SerializeField] private Tile TreeTile;
         [field: SerializeField] private long ChopCooldown;
-        [field: SerializeField] private TMP_Text CarryingText;
+        // [field: SerializeField] private TMP_Text CarryingText;
         private _Behaviour Behaviour;
 
         private Tile Castle;
         private long LastChop;
         private MouseController.MouseController MouseController;
         private ResourcesManager.ResourcesManager ResourcesManager;
+        public override string Name => "Lumberjack";
+        public override int GoldCost => 30;
+        public override int WoodCost => 20;
 
         protected override void Awake() {
             base.Awake();
@@ -27,7 +28,7 @@ namespace Code.Characters {
             this.LastChop = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             this.MouseController = GameObject.FindGameObjectWithTag("MouseController").GetComponent<MouseController.MouseController>();
             this.ResourcesManager = GameObject.FindGameObjectWithTag("ResourcesManager").GetComponent<ResourcesManager.ResourcesManager>();
-            this.CarryingText.SetText(this.Carrying.ToString());
+            // this.CarryingText.SetText(this.Carrying.ToString());
         }
 
         protected override void Update() {
@@ -63,7 +64,7 @@ namespace Code.Characters {
             this.Animator.SetTrigger(ATTACK);
             TreeConsumption treeConsumption = trees.Consume(1);
             this.Carrying += treeConsumption.Quantity;
-            this.CarryingText.SetText(this.Carrying.ToString());
+            // this.CarryingText.SetText(this.Carrying.ToString());
 
             if (this.Carrying >= this.CarryingCapacity) this.ReturnToCastle();
             if (treeConsumption.Depleted) this.FindNearestTrees();
@@ -72,7 +73,7 @@ namespace Code.Characters {
         private void StoreWood() {
             this.ResourcesManager.AddWood(this.Carrying);
             this.Carrying = 0;
-            this.CarryingText.SetText(this.Carrying.ToString());
+            // this.CarryingText.SetText(this.Carrying.ToString());
             if (this.TreeTile is null) {
                 this.Behaviour = _Behaviour.Idle;
             } else {
@@ -117,10 +118,6 @@ namespace Code.Characters {
             base.GoToTile(destination);
             this.Behaviour = _Behaviour.Idle;
             this.TreeTile = null;
-        }
-
-        public override bool CanSummon(ResourcesManager.ResourcesManager resourcesManager) {
-            return resourcesManager.Gold >= GOLD_COST && resourcesManager.Wood >= WOOD_COST;
         }
 
         // ReSharper disable once InconsistentNaming

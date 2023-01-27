@@ -85,10 +85,7 @@ namespace Code.Tiles {
                     Tile tile = toVisit[i];
 
                     Trees trees = tile.GetComponentInChildren<Trees>();
-                    if (trees is not null) {
-                        Debug.Log("Tree found");
-                        return tile;
-                    }
+                    if (trees is not null) return tile;
 
                     visited[tile] = true;
                     toVisit.Remove(tile);
@@ -105,8 +102,6 @@ namespace Code.Tiles {
                     );
                 }
             }
-
-            Debug.Log("No tree found.");
             return null;
         }
 

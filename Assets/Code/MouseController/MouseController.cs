@@ -14,7 +14,6 @@ namespace Code.MouseController {
         private static readonly RaycastHit[] RAYCAST_HITS = new RaycastHit[10];
         [SerializeField] private LayerMask MouseCollisionLayer;
         [SerializeField] private LayerMask TileLayer;
-        [field: SerializeField] private PhantomBuilding PhantomBuilding;
 
         private UnityEngine.Camera Camera;
         private Vector2 CameraAngleVelocity;
@@ -33,6 +32,7 @@ namespace Code.MouseController {
         private Vector2 MousePosition;
         private Vector2 MousePositionDelta;
         private LTDescr MovePhantomBuildingTween;
+        private PhantomBuilding PhantomBuilding;
 
         private Builder PhantomBuildingBuilder;
         private bool PhantomBuildingEnabled;

@@ -1,46 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
 using Code.Interactable;
 using Code.Tiles;
 using Code.UI;
 using UnityEngine;
+using Building = Code.Enums.Building;
 
 namespace Code.Characters {
     public class Builder : Player {
-        public const int GOLD_COST = 100;
-        public const int WOOD_COST = 100;
+
         private static readonly int ATTACK = Animator.StringToHash("Attack");
         [field: SerializeField] private Tile BuildingTile;
         [field: SerializeField] private long BuildCooldown;
         [field: SerializeField] private int BuildPower = 10;
-        [field: SerializeField] private ResourcesWindow ResourcesWindow;
 
-        [field: SerializeField] private Canvas ShopCanvas;
         private _Behaviour Behaviour;
+
+        private BuilderUI BuilderUI;
         private long LastBuild;
         private MouseController.MouseController MouseController;
-
         private ResourcesManager.ResourcesManager ResourcesManager;
+
         private LTDescr Tween;
+        public override string Name => "Builder";
+        public override int GoldCost => 55;
+        public override int WoodCost => 55;
+
+        [field: SerializeField] public List<Building> Buildings { get; private set; }
 
         protected override void Awake() {
             base.Awake();
             this.Behaviour = _Behaviour.Idle;
             this.LastBuild = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            this.ShopCanvas.worldCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityEngine.Camera>();
-            this.ShopCanvas.gameObject.SetActive(false);
-            this.ShopCanvas.transform.localScale *= 0;
+            this.BuilderUI = this.GetComponentInChildren<BuilderUI>();
 
             this.ResourcesManager = GameObject.FindGameObjectWithTag("ResourcesManager").GetComponent<ResourcesManager.ResourcesManager>();
-            this.ResourcesManager.ResourcesWindows.Add(this.ResourcesWindow);
-            this.ResourcesWindow.UpdateResources(this.ResourcesManager);
-
             this.MouseController = GameObject.FindGameObjectWithTag("MouseController").GetComponent<MouseController.MouseController>();
         }
 
         protected override void Update() {
             base.Update();
-            ((IWithWorldCanvas)this).RotateCanvas(this.ShopCanvas);
             if (this.BuildingTile is not null
                 && this.Behaviour == _Behaviour.Building
                 && this.Path.Tiles.Count == 0
@@ -55,7 +55,7 @@ namespace Code.Characters {
             if (this.LastBuild + this.BuildCooldown > now) return;
             this.LastBuild = now;
 
-            Building building = this.BuildingTile.GetComponentInChildren<Building>();
+            Interactable.Building building = this.BuildingTile.GetComponentInChildren<Interactable.Building>();
             if (building.Completed) {
                 this.BuildingTile = null;
                 this.Behaviour = _Behaviour.Idle;
@@ -73,7 +73,7 @@ namespace Code.Characters {
         public override void InteractWith(IInteractable interactable) {
             if (interactable == null) return;
             switch (interactable) {
-                case Building { Completed: false } building:
+                case Interactable.Building { Completed: false } building:
                     this.Behaviour = _Behaviour.Building;
                     this.BuildingTile = building.Tile;
                     this.BuildingTile.Feedback();
@@ -89,10 +89,6 @@ namespace Code.Characters {
             this.BuildingTile = null;
         }
 
-        public override bool CanSummon(ResourcesManager.ResourcesManager resourcesManager) {
-            return resourcesManager.Gold >= GOLD_COST && resourcesManager.Wood >= WOOD_COST;
-        }
-
         public void CreatePhantomBuilding(PhantomBuilding phantom) {
             if (!phantom.OnCompletionBuilding.CanBuild(this.ResourcesManager)) return;
 
@@ -103,32 +99,13 @@ namespace Code.Characters {
         public override void OnSelect() {
             this.MouseExit();
 
-            if (this.Tween != null) LeanTween.cancel(this.Tween.id);
-
-            this.ShopCanvas.gameObject.SetActive(true);
-            float duration = 1 - this.ShopCanvas.transform.localScale.x;
-            this.Tween = LeanTween.scale(this.ShopCanvas.gameObject, Vector3.one, duration * 0.25f)
-                .setDelay(0.2f)
-                .setEaseOutBack()
-                .setOnComplete(() => this.Tween = null);
+            this.BuilderUI.Open();
         }
 
         public override void OnDeselect() {
             base.MouseExit();
-            if (!this.ShopCanvas.gameObject.activeSelf)
-                return;
 
-            if (this.Tween != null) LeanTween.cancel(this.Tween.id);
-
-            float duration = this.ShopCanvas.transform.localScale.x;
-            this.Tween = LeanTween.scale(this.ShopCanvas.gameObject, Vector3.zero, duration * 0.25f)
-                .setEaseInBack()
-                .setOnComplete(
-                    () => {
-                        this.ShopCanvas.gameObject.SetActive(false);
-                        this.Tween = null;
-                    }
-                );
+            this.BuilderUI.Close();
         }
 
         // ReSharper disable once InconsistentNaming
