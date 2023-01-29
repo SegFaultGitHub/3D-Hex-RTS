@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Code.Interactable;
 using Code.Tiles;
-using TMPro;
 using UnityEngine;
 
 namespace Code.Characters {
@@ -12,7 +11,7 @@ namespace Code.Characters {
         [SerializeField] private int Carrying;
         [SerializeField] private Tile MineTile;
         [SerializeField] private long MineCooldown;
-        [field: SerializeField] private TMP_Text CarryingText;
+        // [field: SerializeField] private TMP_Text CarryingText;
         private _Behaviour Behaviour;
 
         private Tile Castle;
@@ -22,8 +21,9 @@ namespace Code.Characters {
         private MouseController.MouseController MouseController;
         private ResourcesManager.ResourcesManager ResourcesManager;
         private LTDescr Tween;
-        public const int GOLD_COST = 35;
-        public const int WOOD_COST = 50;
+        public override string Name => "Miner";
+        public override int GoldCost => 20;
+        public override int WoodCost => 30;
 
         protected override void Awake() {
             base.Awake();
@@ -71,7 +71,7 @@ namespace Code.Characters {
             if (this.LastMine + this.MineCooldown > now) return;
             this.LastMine = now;
             this.Carrying++;
-            this.CarryingText.SetText(this.Carrying.ToString());
+            // this.CarryingText.SetText(this.Carrying.ToString());
 
             if (this.Carrying < this.CarryingCapacity)
                 return;
@@ -81,7 +81,7 @@ namespace Code.Characters {
         private void StoreGold() {
             this.ResourcesManager.AddGold(this.Carrying);
             this.Carrying = 0;
-            this.CarryingText.SetText(this.Carrying.ToString());
+            // this.CarryingText.SetText(this.Carrying.ToString());
             if (this.MineTile is null) {
                 this.Behaviour = _Behaviour.Idle;
             } else {
@@ -124,10 +124,6 @@ namespace Code.Characters {
             base.GoToTile(destination);
             this.Behaviour = _Behaviour.Idle;
             this.MineTile = null;
-        }
-
-        public override bool CanSummon(ResourcesManager.ResourcesManager resourcesManager) {
-            return resourcesManager.Gold >= GOLD_COST && resourcesManager.Wood >= WOOD_COST;
         }
 
         // ReSharper disable once InconsistentNaming

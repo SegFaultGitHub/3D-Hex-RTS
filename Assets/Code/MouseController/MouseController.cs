@@ -18,27 +18,27 @@ namespace Code.MouseController {
         private UnityEngine.Camera Camera;
         private Vector2 CameraAngleVelocity;
         private CameraController CameraController;
+        private Vector3 CameraFocusPosition;
+
+        private LTDescr CameraFocusTween;
         private Vector3 CameraVelocity;
 
         private Tile Castle;
+        private LTDescr EnablePhantomBuildingTween;
 
         private Selectable MouseOver;
 
         private bool MouseOverUI;
         private Vector2 MousePosition;
         private Vector2 MousePositionDelta;
+        private LTDescr MovePhantomBuildingTween;
+        private PhantomBuilding PhantomBuilding;
+
+        private Builder PhantomBuildingBuilder;
+        private bool PhantomBuildingEnabled;
         private Selectable Selected;
 
         private float TargetCameraFOV;
-
-        private LTDescr CameraFocusTween;
-        private Vector3 CameraFocusPosition;
-
-        private Builder PhantomBuildingBuilder;
-        private LTDescr MovePhantomBuildingTween;
-        private LTDescr EnablePhantomBuildingTween;
-        private bool PhantomBuildingEnabled;
-        [field: SerializeField] private PhantomBuilding PhantomBuilding;
 
         private bool CameraMoving => this.Input.MoveCameraInProgress || this.Input.RotateCameraInProgress;
 

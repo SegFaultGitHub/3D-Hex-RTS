@@ -1,8 +1,5 @@
-﻿using System;
-using Code.Tiles;
+﻿using Code.Extensions;
 using UnityEngine;
-using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 namespace Code.Interactable {
     public struct TreeConsumption {
@@ -13,23 +10,20 @@ namespace Code.Interactable {
     public class Trees : Building {
         [field: SerializeField] private int MinQuantity, MaxQuantity;
         [field: SerializeField] private GameObject TreesModel;
-        [field: SerializeField] private int Quantity { get; set; }
 
         private int InitialQuantity;
         private LTDescr Tween;
-
-        [Space, Header("UI")]
-        private float UIWidth;
-        [field: SerializeField] private RectMask2D RectMask;
+        public override string Name => "Trees";
+        public override int GoldCost => -1;
+        public override int WoodCost => -1;
+        [field: SerializeField] private int Quantity { get; set; }
 
         protected override void Awake() {
             base.Awake();
+            this.OnEndOfFrame(() => this.SetCompleted(false));
             this.Quantity = Random.Range(this.MinQuantity, this.MaxQuantity);
             this.InitialQuantity = this.Quantity;
-            this.UIWidth = this.MouseOverCanvas.transform.GetComponent<RectTransform>().rect.width;
         }
-
-        public override void Interact(Selectable selected) { }
 
         private void Shake() {
             if (this.Tween != null) return;
@@ -50,7 +44,7 @@ namespace Code.Interactable {
             this.Shake();
             quantity = Mathf.Min(this.Quantity, quantity);
             this.Quantity -= quantity;
-            this.UpdateQuantityUI();
+            this.BuildingNameUI.UpdateProgress(this.Quantity / (float)this.InitialQuantity);
 
             if (this.Quantity > 0)
                 return new TreeConsumption {
@@ -65,9 +59,8 @@ namespace Code.Interactable {
             };
         }
 
-        private void UpdateQuantityUI() {
-            float ratio = this.Quantity / (float)this.InitialQuantity;
-            this.RectMask.padding = new Vector4(0, 0, this.UIWidth * (1 - ratio), 0);
+        public override bool CanBuild(ResourcesManager.ResourcesManager resourcesManager) {
+            return false;
         }
     }
 }

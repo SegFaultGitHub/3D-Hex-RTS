@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 87ae2f503e8bb94439955574afde0681
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Typewriter 215FP
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: a5b6b91ec538c2944a6dacbe853f1acd, type: 3}
+  - {fileID: 12800000, guid: 36f9d3001d5562f4fa1690c0d6ff4c5d, type: 3}
+  - {fileID: 12800000, guid: a20e599edcb2c524383c4ae28c16176d, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

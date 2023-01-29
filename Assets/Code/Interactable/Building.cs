@@ -4,63 +4,32 @@ using Code.UI;
 using UnityEngine;
 
 namespace Code.Interactable {
-    public abstract class Building : Selectable, IInteractable, IWithWorldCanvas {
-        [field: SerializeField] protected Canvas MouseOverCanvas;
-
-        private LTDescr PopupTween;
-        [field: SerializeField] public bool Completed { get; private set; }
-        [field: SerializeField] private ProgressiveBarUI ProgressBar;
+    public abstract class Building : Selectable, IInteractable {
         [field: SerializeField] private int Durability;
         [field: SerializeField] private int TotalDurability;
+        protected BuildingNameUI BuildingNameUI;
+        public abstract string Name { get; }
+        public abstract int GoldCost { get; }
+        public abstract int WoodCost { get; }
+        [field: SerializeField] public Enums.Building BuildingType { get; private set; }
+
+        [field: SerializeField] public bool Completed { get; private set; }
 
         public Tile Tile { get; set; }
 
         protected override void Awake() {
             base.Awake();
-            this.MouseOverCanvas.worldCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityEngine.Camera>();
-            this.MouseOverCanvas.gameObject.SetActive(false);
-            this.MouseOverCanvas.transform.localScale *= 0;
             this.Tile = this.GetComponentInParent<Tile>();
+            this.BuildingNameUI = this.GetComponentInChildren<BuildingNameUI>();
         }
 
-        protected void Update() {
-            ((IWithWorldCanvas)this).RotateCanvas(this.MouseOverCanvas);
-        }
-
-        public abstract void Interact(Selectable selected);
+        public virtual void Interact(Selectable selected) { }
 
         public override void MouseEnter() {
-            this.ShowUI();
+            this.BuildingNameUI.Open();
         }
         public override void MouseExit() {
-            this.HideUI();
-        }
-
-        private void HideUI() {
-            if (!this.MouseOverCanvas.gameObject.activeSelf)
-                return;
-
-            if (this.PopupTween != null) LeanTween.cancel(this.PopupTween.id);
-
-            float duration = this.MouseOverCanvas.transform.localScale.x;
-            this.PopupTween = LeanTween.scale(this.MouseOverCanvas.gameObject, Vector3.zero, duration * 0.25f)
-                .setEaseInBack()
-                .setOnComplete(
-                    () => {
-                        this.MouseOverCanvas.gameObject.SetActive(false);
-                        this.PopupTween = null;
-                    }
-                );
-        }
-
-        private void ShowUI() {
-            if (this.PopupTween != null) LeanTween.cancel(this.PopupTween.id);
-
-            this.MouseOverCanvas.gameObject.SetActive(true);
-            float duration = 1 - this.MouseOverCanvas.transform.localScale.x;
-            this.PopupTween = LeanTween.scale(this.MouseOverCanvas.gameObject, Vector3.one, duration * 0.25f)
-                .setEaseOutBack()
-                .setOnComplete(() => this.PopupTween = null);
+            this.BuildingNameUI.Close();
         }
 
         public void SetCompleted(bool feedback = true) {
@@ -69,8 +38,7 @@ namespace Code.Interactable {
 
         private void SetDurability(int durability, bool feedback = true) {
             this.Durability = Math.Min(durability, this.TotalDurability);
-            float ratio = (float)this.Durability / this.TotalDurability;
-            this.ProgressBar.UpdateRatio(ratio);
+            this.BuildingNameUI.UpdateProgress((float)this.Durability / this.TotalDurability);
             if (this.Durability < this.TotalDurability)
                 return;
             if (feedback) this.Tile.Feedback();
@@ -82,7 +50,7 @@ namespace Code.Interactable {
         }
 
         public virtual bool CanBuild(ResourcesManager.ResourcesManager resourcesManager) {
-            return false;
+            return resourcesManager.Gold >= this.GoldCost && resourcesManager.Wood >= this.WoodCost;
         }
     }
 }

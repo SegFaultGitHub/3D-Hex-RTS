@@ -22,7 +22,7 @@ namespace Code.Tiles {
 
         [field: SerializeField] public bool AllowMultipleEntities { get; set; }
 
-        private void Awake() {
+        protected virtual void Awake() {
             this.Model = this.transform.Find("Model").gameObject;
             this.Objects = this.transform.Find("Model/Objects").gameObject;
             this.Fog = this.transform.Find("Fog").gameObject;
@@ -85,10 +85,7 @@ namespace Code.Tiles {
                     Tile tile = toVisit[i];
 
                     Trees trees = tile.GetComponentInChildren<Trees>();
-                    if (trees is not null) {
-                        Debug.Log("Tree found");
-                        return tile;
-                    }
+                    if (trees is not null) return tile;
 
                     visited[tile] = true;
                     toVisit.Remove(tile);
@@ -105,8 +102,6 @@ namespace Code.Tiles {
                     );
                 }
             }
-
-            Debug.Log("No tree found.");
             return null;
         }
 

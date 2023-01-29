@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Code.Camera;
+using Code.Characters;
 using Code.Enums;
+using Code.Extensions;
 using Code.Interactable;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -23,6 +25,8 @@ namespace Code.Tiles {
         private const int BASE_SIZE = 3;
         private const int BASE_TRANSITION_SIZE = 5;
         private const int MINE_MIN_DISTANCE = 3;
+
+        [field: SerializeField] private List<Player> StartingPlayers;
 
         private Vector3Int BasePosition;
 
@@ -48,6 +52,7 @@ namespace Code.Tiles {
         [field: SerializeField] private Castle Castle { get; set; }
         [field: SerializeField] private Mine Mine { get; set; }
         [field: SerializeField] private int Radius { get; set; }
+
 
         private void Start() {
             LeanTween.init(1200);
@@ -130,7 +135,6 @@ namespace Code.Tiles {
 
             return neighbours;
         }
-
 
         private Tile GenerateTile(Vector3 position, Vector3Int gridPosition) {
             float terrainNoise;
@@ -228,7 +232,14 @@ namespace Code.Tiles {
             switch (this.MapType) {
                 case MapType.Playable when gridPosition == this.BasePosition: {
                     Castle castle = Instantiate(this.Castle, tile.Objects.transform);
-                    castle.SetCompleted(false);
+                    this.OnEndOfFrame(
+                        () => {
+                            castle.SetCompleted(false);
+                            foreach (Player startingPlayer in this.StartingPlayers) {
+                                castle.SpawnPlayer(startingPlayer);
+                            }
+                        }
+                    );
                     tile.name = $"Castle - {tile.name}";
                     castle.transform.eulerAngles = new Vector3(
                         0,
