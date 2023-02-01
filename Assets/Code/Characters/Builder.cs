@@ -97,9 +97,11 @@ namespace Code.Characters {
         }
 
         public override void OnSelect() {
-            this.MouseExit();
+            // this.MouseExit();
+            //
+            // this.BuilderUI.Open();
 
-            this.BuilderUI.Open();
+            this.Die();
         }
 
         public override void OnDeselect() {

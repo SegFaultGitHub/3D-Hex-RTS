@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Code.Extensions;
 using Code.Interactable;
 using Code.Tiles;
 using Code.UI;
@@ -9,12 +10,14 @@ using UnityEngine;
 namespace Code.Characters {
     public abstract class Character : Selectable, IWithWorldCanvas {
 
+        private static readonly int DEAD = Animator.StringToHash("Dead");
         private const float TURN_SMOOTH_TIME = 0.1f;
         private static readonly Collider[] GROUND_COLLIDER = new Collider[1];
         private static readonly Vector3 GRAVITY = new(0, -0.02f, 0);
         private static readonly int MOVING = Animator.StringToHash("Moving");
         [field: SerializeField] protected Tile GroundTile;
         [field: SerializeField] private float Speed;
+        public bool Dead { get; private set; }
 
         protected Animator Animator;
 
@@ -80,6 +83,7 @@ namespace Code.Characters {
         }
 
         private void FixedUpdate() {
+            if (this.Dead) return;
             #region Movement
             if (this.MovementDirection.sqrMagnitude != 0) {
                 float yValue = this.MovementDirection.y;
@@ -140,6 +144,14 @@ namespace Code.Characters {
             this.Controller.enabled = true;
         }
 
+        public void Die()
+        {
+            this.Dead = true;
+            this.Animator.SetBool(DEAD, true);
+            float animationDuration = 1;
+            this.InSeconds(animationDuration, this.OnDie);
+        }
+
         protected Tile FindNearestCastle() {
             GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("Castle");
             Tile nearestCastle = default;
@@ -166,7 +178,9 @@ namespace Code.Characters {
             this.CharacterNameUI.Close();
         }
 
-        protected void RotateTowardsTile(Tile tile) {
+        protected void RotateTowardsTile(Tile tile)
+        {
+            if (this.Dead) return;
             Vector3 diff = tile.GridPosition - this.GroundTile.GridPosition;
             float targetAngle;
             if (diff == new Vector3(1, -1, 0)) targetAngle = 30;
@@ -191,5 +205,10 @@ namespace Code.Characters {
 
         public virtual void OnSelect() { }
         public virtual void OnDeselect() { }
+
+        public virtual void OnDie()
+        {
+            LeanTween.scale(this.gameObject, Vector3.zero, 0.3f).setDestroyOnComplete(true);
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using Code.Characters;
 using Code.Interactable;
 using TMPro;
@@ -83,6 +84,11 @@ namespace Code.UI {
                         this.OpenTween = null;
                     }
                 );
+        }
+
+        private void OnDestroy()
+        {
+            this.ResourcesManager.ResourcesUIs.Remove(this.ResourcesUI);
         }
     }
 }
